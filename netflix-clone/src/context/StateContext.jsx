@@ -3,13 +3,13 @@ import { createContext, useContext, useState } from 'react'
 const context = createContext()
 
 export const StateContext = ({ children }) => {
-  const [Teste, setTeste] = useState(0)
+  const[movie, setMovie] = useState([])
 
   return (
     <context.Provider
       value={{
-        Teste,
-        setTeste
+        movie,
+        setMovie
       }}
     >
       {children}

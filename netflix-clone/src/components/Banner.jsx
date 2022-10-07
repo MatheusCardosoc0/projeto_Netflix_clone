@@ -1,21 +1,28 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import requests, { request } from '../assets/api/Request'
+import { instance } from '../assets/api/axios'
+import requests from '../assets/api/Request'
 import Button from '../assets/Button'
+import { useStateContext } from '../context/StateContext'
 
 function Banner() {
 
-  const[movie, setMovie] = useState([])
+  const {movie, setMovie} = useStateContext()
 
   useEffect(() => {
-    async function fetchData(){
-      const request = await axios.get(requests.fetchNetflixOriginals)
-      setMovie(
-        request.data.results[
-          Math.floor(Math.random() * request.data.results.length - 1)
-        ]
-      )
+    async function GetFilms() {
+      const response = await instance.get(requests.fetchNetflixOriginals, {
+        params: {
+          api_key: "ccbfbc8dd52c71d7f1a46e1b46db20ee",
+          language: "pt-br",
+          page: 2
+        }
+      })
+      setMovie(response.data.results[
+      18
+      ])
     }
+    GetFilms()
   },[])
 
   function truncate(string, n){
@@ -24,15 +31,19 @@ function Banner() {
 
 
   return (
-    <header className="bg-black">
-      <div className="p-3 text-zinc-200 items-start">
+    <header style={{
+      backgroundImage: `url("https://image.tmdb.org/t/p/original/${movie?.poster_path}")`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center center'
+    }}>
+      <div className="p-3 text-white items-start">
         <div className='mt-40 font-bold flex flex-col gap-5 '>
-          <h1 className="text-6xl">Nome do filme</h1>
+          <h1 className="text-6xl">{movie?.name}</h1>
           <div className="flex gap-4">
             <Button>Assistir</Button>
             <Button>Minha lista</Button>
           </div>
-          <h1 className="w-[30rem]">{truncate("Essa é uma descrição teste wejhirjtiorjtf trjgjlkgljhtçtjholtgj fjdjiodsjpooleroe tgjritj jerikjtri rjr jerjeeiuewhoewioeirhtb htheriurihjiohruihrtru hberhtruihurhrhtrhtr erhurhhrjlthjrrthrurht trrtrtt", 165)}</h1>
+          <h1 className="w-[30rem]">{truncate(`${movie.overview}`, 165)}</h1>
         </div>
       </div>
       <div className='h-[7.2rem] bg-transparencia' />
